@@ -1,6 +1,22 @@
+// Login check सबसे पहले
+
+let userName = localStorage.getItem("name");
+let userMobile = localStorage.getItem("mobile");
+
+if(!userName || !userMobile){
+    window.location.href = "login.html";
+}
+
+
+// Socket connection
+
 const socket = io("https://friend-chat-1-5k6l.onrender.com");
 
+
 let username = document.getElementById("username");
+username.value = userName;
+
+
 let message = document.getElementById("message");
 let messages = document.getElementById("messages");
 
