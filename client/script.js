@@ -1,4 +1,4 @@
-const socket = io("http://192.168.31.18:3000");
+const socket = io("https://friend-chat-1-5k6l.onrender.com");
 
 let username = document.getElementById("username");
 let message = document.getElementById("message");
