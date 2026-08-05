@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Friend Chat Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <h1>Friend Chat</h1>
+
+    <input id="name" placeholder="Apna naam likho">
+
+    <input id="mobile" placeholder="Mobile number" maxlength="10">
+
+    <button onclick="login()">Login</button>
+
+</div>
+
+
+<script>
+
+function login(){
+
+    let name = document.getElementById("name").value;
+    let mobile = document.getElementById("mobile").value;
+
+
+    if(name=="" || mobile==""){
+        alert("Name aur Mobile number bharo");
+        return;
+    }
+
+
+    localStorage.setItem("name",name);
+    localStorage.setItem("mobile",mobile);
+
+
+    window.location.href="index.html";
+
+}
+
+</script>
+
+</body>
+</html>
