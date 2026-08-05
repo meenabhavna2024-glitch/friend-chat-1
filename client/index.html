@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Friend Chat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="chat-box">
+
+    <h1>💬 Friend Chat</h1>
+
+    <input id="username" placeholder="Apna naam likho">
+
+    <div id="messages"></div>
+
+    <div class="send">
+        <input id="message" placeholder="Message likho">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+</div>
+<script src="http://192.168.31.18:3000/socket.io/socket.io.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
