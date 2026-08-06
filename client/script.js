@@ -31,37 +31,33 @@ function sendMessage() {
     if (message.value.trim() === "") {
         return;
     }
-
-    let data = {
-        name: userName,
-        mobile: userMobile,
-        text: message.value.trim()
-    };
-
+let data = {
+    sender: userMobile,
+    receiver: "all",
+    text: message.value
+};
     socket.emit("send_message", data);
 
     message.value = "";
 }
-
 // Receive Message
 socket.on("receive_message", (data) => {
 
-  let div = document.createElement("div");
+    let div = document.createElement("div");
 
-if(data.mobile == userMobile){
-    div.className = "myMessage";
-}else{
-    div.className = "otherMessage";
-}
+    if(data.sender == userMobile){
+        div.className = "myMessage";
+    }else{
+        div.className = "otherMessage";
+    }
 
-div.innerHTML = `
-<div class="chatName">${data.name}</div>
-<div>${data.text}</div>
-`;
+    div.innerHTML = `
+    <div class="chatName">${data.sender}</div>
+    <div>${data.text}</div>
+    `;
 
-messages.appendChild(div);
-
-messages.scrollTop = messages.scrollHeight;
+    messages.appendChild(div);
 
     messages.scrollTop = messages.scrollHeight;
+
 });
