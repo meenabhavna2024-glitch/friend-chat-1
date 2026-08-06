@@ -1,61 +1,67 @@
-// Login check सबसे पहले
+// =============================
+// Friend Chat Script
+// =============================
 
+// Login Check
 let userName = localStorage.getItem("name");
 let userMobile = localStorage.getItem("mobile");
 
-if(!userName || !userMobile){
+if (!userName || !userMobile) {
     window.location.href = "login.html";
 }
 
-
-// Socket connection
-
+// Socket Connection
 const socket = io("https://friend-chat-1-5k6l.onrender.com");
 
-
+// Elements
 let username = document.getElementById("username");
-username.value = userName;
-
-
+let profileName = document.getElementById("profileName");
+let status = document.getElementById("status");
 let message = document.getElementById("message");
 let messages = document.getElementById("messages");
 
+// Set User Info
+username.value = userName;
+profileName.innerText = userName;
+status.innerHTML = "🟢 Online";
 
-function sendMessage(){
+// Send Message
+function sendMessage() {
 
-    if(username.value == ""){
-        alert("Apna naam likho");
+    if (message.value.trim() === "") {
         return;
     }
-
-    if(message.value == ""){
-        return;
-    }
-
 
     let data = {
-        name: username.value,
-        text: message.value
+        name: userName,
+        mobile: userMobile,
+        text: message.value.trim()
     };
-
 
     socket.emit("send_message", data);
 
     message.value = "";
 }
 
+// Receive Message
+socket.on("receive_message", (data) => {
 
+  let div = document.createElement("div");
 
-socket.on("receive_message",(data)=>{
+if(data.mobile == userMobile){
+    div.className = "myMessage";
+}else{
+    div.className = "otherMessage";
+}
 
-    let p = document.createElement("p");
+div.innerHTML = `
+<div class="chatName">${data.name}</div>
+<div>${data.text}</div>
+`;
 
-    p.innerHTML = 
-    "<b>"+data.name+"</b>: "+data.text;
+messages.appendChild(div);
 
-
-    messages.appendChild(p);
+messages.scrollTop = messages.scrollHeight;
 
     messages.scrollTop = messages.scrollHeight;
-
 });

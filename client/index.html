@@ -1,27 +1,108 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Friend Chat</title>
-    <link rel="stylesheet" href="style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Friend Chat</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
 </head>
 
 <body>
 
-<div class="chat-box">
+<div class="chat-app">
 
-    <h1>💬 Friend Chat</h1>
+    <!-- Header -->
 
-    <input id="username" placeholder="Apna naam likho">
+    <header class="top-bar">
 
-    <div id="messages"></div>
+        <div class="left">
 
-    <div class="send">
-        <input id="message" placeholder="Message likho">
-        <button onclick="sendMessage()">Send</button>
-    </div>
+            <img
+            src="https://ui-avatars.com/api/?background=4f46e5&color=fff&name=Friend+Chat"
+            class="profile">
+
+            <div>
+
+                <h2 id="profileName">Friend Chat</h2>
+
+                <span id="status">
+                    🟢 Online
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="right">
+
+            <i class="fas fa-search"></i>
+
+            <i class="fas fa-phone"></i>
+
+            <i class="fas fa-video"></i>
+
+            <i class="fas fa-ellipsis-vertical"></i>
+
+        </div>
+
+    </header>
+
+    <!-- Chat Area -->
+
+    <main id="messages" class="messages">
+
+    </main>
+
+    <!-- Bottom -->
+
+    <footer class="bottom">
+
+        <button class="icon-btn">
+            😊
+        </button>
+
+        <button class="icon-btn">
+            📎
+        </button>
+
+        <input
+        id="message"
+        type="text"
+        placeholder="Type a message..."
+        autocomplete="off"
+        onkeydown="if(event.key==='Enter')sendMessage()">
+
+        <button class="icon-btn">
+            🎤
+        </button>
+
+        <button
+        class="send-btn"
+        onclick="sendMessage()">
+
+            <i class="fas fa-paper-plane"></i>
+
+        </button>
+
+    </footer>
 
 </div>
-<script src="http://192.168.31.18:3000/socket.io/socket.io.js"></script>
+
+<!-- Hidden username -->
+
+<input
+type="hidden"
+id="username">
+
 <script src="script.js"></script>
 
 </body>
