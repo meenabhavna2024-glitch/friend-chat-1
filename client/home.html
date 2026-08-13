@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Friend Chat</title>
+
+<link rel="stylesheet" href="home.css">
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- Top Header -->
+
+    <div class="header">
+
+        <div>
+            <h2>Friend Chat</h2>
+            <p>Connect • Chat • Share</p>
+        </div>
+
+        <div class="menu">
+            ☰
+        </div>
+
+    </div>
+
+
+
+
+    <!-- My Profile -->
+
+
+    <div class="profile">
+
+        <div class="dp">
+            👤
+        </div>
+
+
+        <div class="info">
+
+            <h3 id="myName">
+                User
+            </h3>
+
+            <p>
+                🟢 Online
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- Search -->
+
+
+    <div class="search">
+
+        <input 
+        type="text" 
+        placeholder="Search friends..."
+        >
+
+    </div>
+
+
+
+
+
+    <!-- Contact List -->
+
+
+    <div class="contacts">
+
+
+        <div class="user">
+
+
+            <div class="dp small">
+                A
+            </div>
+
+
+            <div class="user-info">
+
+                <h3>
+                    Amit
+                </h3>
+
+                <p>
+                    Hello, kaise ho?
+                </p>
+
+            </div>
+
+
+            <span class="time">
+                10:30
+            </span>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="user">
+
+
+            <div class="dp small">
+                B
+            </div>
+
+
+            <div class="user-info">
+
+                <h3>
+                    Bhavna
+                </h3>
+
+                <p>
+                    Last message...
+                </p>
+
+            </div>
+
+
+            <span class="time">
+                09:15
+            </span>
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <div class="user">
+
+
+            <div class="dp small">
+                C
+            </div>
+
+
+            <div class="user-info">
+
+                <h3>
+                    Friend
+                </h3>
+
+                <p>
+                    Let's chat
+                </p>
+
+            </div>
+
+
+            <span class="time">
+                Yesterday
+            </span>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+    <!-- Bottom Button -->
+
+
+    <div class="bottom">
+
+        <button>
+            + New Chat
+        </button>
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+let name = localStorage.getItem("name");
+
+
+if(name){
+
+document.getElementById("myName").innerText=name;
+
+}
+
+
+
+</script>
+
+<script>
+
+fetch("https://friend-chat-1-5k6l.onrender.com/users")
+
+.then(res=>res.json())
+
+.then(users=>{
+
+
+let contacts=document.querySelector(".contacts");
+
+
+contacts.innerHTML="";
+
+
+users.forEach(user=>{
+
+
+let div=document.createElement("div");
+
+
+div.className="user";
+
+
+div.innerHTML=`
+
+<div class="dp small">
+${user.name.charAt(0)}
+</div>
+
+<div class="user-info">
+
+<h3>
+${user.name}
+</h3>
+
+<p>
+${user.mobile}
+</p>
+
+</div>
+
+`;
+
+
+contacts.appendChild(div);
+
+
+});
+
+
+})
+
+.catch(err=>{
+
+console.log(err);
+
+});
+
+
+</script>
+
+</body>
+
+</html>
