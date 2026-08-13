@@ -2,25 +2,19 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend Chat</title>
 
-<title>Friend Chat</title>
-
-<link rel="stylesheet" href="home.css">
-
+    <link rel="stylesheet" href="home.css">
 </head>
-
 
 <body>
 
-
 <div class="app">
 
-
-    <!-- Top Header -->
-
+    <!-- Header -->
     <div class="header">
 
         <div>
@@ -35,258 +29,264 @@
     </div>
 
 
-
-
     <!-- My Profile -->
-
-
     <div class="profile">
 
         <div class="dp">
             👤
         </div>
 
-
         <div class="info">
 
-            <h3 id="myName">
-                User
-            </h3>
+            <h3 id="myName">User</h3>
 
-            <p>
-                🟢 Online
-            </p>
+            <p>🟢 Online</p>
 
         </div>
-
 
     </div>
 
 
-
-
-
     <!-- Search -->
-
-
     <div class="search">
 
-        <input 
-        type="text" 
-        placeholder="Search friends..."
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Search friends..."
         >
 
     </div>
 
 
-
-
-
     <!-- Contact List -->
+    <div class="contacts" id="contacts">
 
-
-    <div class="contacts">
-
-
-        <div class="user">
-
-
-            <div class="dp small">
-                A
-            </div>
-
-
-            <div class="user-info">
-
-                <h3>
-                    Amit
-                </h3>
-
-                <p>
-                    Hello, kaise ho?
-                </p>
-
-            </div>
-
-
-            <span class="time">
-                10:30
-            </span>
-
-
-        </div>
-
-
-
-
-
-
-        <div class="user">
-
-
-            <div class="dp small">
-                B
-            </div>
-
-
-            <div class="user-info">
-
-                <h3>
-                    Bhavna
-                </h3>
-
-                <p>
-                    Last message...
-                </p>
-
-            </div>
-
-
-            <span class="time">
-                09:15
-            </span>
-
-
-        </div>
-
-
-
-
-
-
-
-
-        <div class="user">
-
-
-            <div class="dp small">
-                C
-            </div>
-
-
-            <div class="user-info">
-
-                <h3>
-                    Friend
-                </h3>
-
-                <p>
-                    Let's chat
-                </p>
-
-            </div>
-
-
-            <span class="time">
-                Yesterday
-            </span>
-
-
-        </div>
-
-
+        <p class="loading">
+            Users loading...
+        </p>
 
     </div>
-
-
-
 
 
     <!-- Bottom Button -->
-
-
     <div class="bottom">
 
-        <button>
+        <button onclick="newChat()">
             + New Chat
         </button>
 
-
     </div>
-
-
 
 </div>
 
 
-
-
-
 <script>
 
+const myName = localStorage.getItem("name");
+const myMobile = localStorage.getItem("mobile");
 
-let name = localStorage.getItem("name");
 
+// Login check
+if (!myName || !myMobile) {
 
-if(name){
-
-document.getElementById("myName").innerText=name;
+    window.location.href = "login.html";
 
 }
 
 
-
-</script>
-
-<script>
-
-fetch("https://friend-chat-1-5k6l.onrender.com/users")
-
-.then(res=>res.json())
-
-.then(users=>{
+// Show my name
+document.getElementById("myName").innerText = myName;
 
 
-let contacts=document.querySelector(".contacts");
+// Users array
+let allUsers = [];
 
 
-contacts.innerHTML="";
+// Get users from MongoDB
+async function loadUsers() {
+
+    const contacts = document.getElementById("contacts");
+
+    try {
+
+        const response = await fetch(
+            "https://friend-chat-1-5k6l.onrender.com/users"
+        );
+
+        if (!response.ok) {
+
+            throw new Error("Users API failed");
+
+        }
+
+        const users = await response.json();
+
+        allUsers = users;
+
+        showUsers(users);
+
+    } catch (error) {
+
+        console.log("Users Error:", error);
+
+        contacts.innerHTML = `
+            <div class="error">
+                ❌ Users load नहीं हो पाए
+                <br><br>
+                Server या MongoDB check करो
+            </div>
+        `;
+
+    }
+
+}
 
 
-users.forEach(user=>{
+// Show users
+function showUsers(users) {
+
+    const contacts = document.getElementById("contacts");
+
+    contacts.innerHTML = "";
 
 
-let div=document.createElement("div");
+    // Current user को list में मत दिखाओ
+    const otherUsers = users.filter(
+        user => user.mobile !== myMobile
+    );
 
 
-div.className="user";
+    if (otherUsers.length === 0) {
+
+        contacts.innerHTML = `
+            <div class="empty">
+                अभी कोई दूसरा user नहीं है
+            </div>
+        `;
+
+        return;
+
+    }
 
 
-div.innerHTML=`
+    otherUsers.forEach(user => {
 
-<div class="dp small">
-${user.name.charAt(0)}
-</div>
+        const div = document.createElement("div");
 
-<div class="user-info">
-
-<h3>
-${user.name}
-</h3>
-
-<p>
-${user.mobile}
-</p>
-
-</div>
-
-`;
+        div.className = "user";
 
 
-contacts.appendChild(div);
+        const firstLetter =
+            user.name
+                ? user.name.charAt(0).toUpperCase()
+                : "?";
 
 
-});
+        div.innerHTML = `
+
+            <div class="dp small">
+                ${firstLetter}
+            </div>
+
+            <div class="user-info">
+
+                <h3>
+                    ${user.name}
+                </h3>
+
+                <p>
+                    📱 ${user.mobile}
+                </p>
+
+            </div>
+
+            <div class="arrow">
+                ›
+            </div>
+
+        `;
 
 
-})
+        // User पर click
+        div.addEventListener("click", function () {
 
-.catch(err=>{
+            openChat(user);
 
-console.log(err);
+        });
 
-});
 
+        contacts.appendChild(div);
+
+    });
+
+}
+
+
+// Open chat
+function openChat(user) {
+
+    localStorage.setItem(
+        "chatUserName",
+        user.name
+    );
+
+    localStorage.setItem(
+        "chatUserMobile",
+        user.mobile
+    );
+
+
+    window.location.href = "index.html";
+
+}
+
+
+// Search
+document
+    .getElementById("searchInput")
+    .addEventListener("input", function () {
+
+        const search =
+            this.value.toLowerCase().trim();
+
+
+        const filtered =
+            allUsers.filter(user =>
+
+                user.mobile !== myMobile &&
+
+                (
+                    user.name
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    user.mobile
+                        .includes(search)
+                )
+
+            );
+
+
+        showUsers(filtered);
+
+    });
+
+
+// New Chat button
+function newChat() {
+
+    document
+        .getElementById("searchInput")
+        .focus();
+
+}
+
+
+// Load users
+loadUsers();
 
 </script>
 

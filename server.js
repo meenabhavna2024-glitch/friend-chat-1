@@ -14,10 +14,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// client folder serve
+
+// Client folder
 app.use(express.static(path.join(__dirname, "client")));
 
+
 const server = http.createServer(app);
+
 
 const io = new Server(server, {
     cors: {
@@ -25,11 +28,10 @@ const io = new Server(server, {
     }
 });
 
-
-// Test route
-app.get("/", (req,res)=>{
-    res.send("Friend Chat Server Running");
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "home.html"));
 });
+
 // Get all users
 app.get("/users", async (req, res) => {
 
@@ -39,7 +41,9 @@ app.get("/users", async (req, res) => {
 
         res.json(users);
 
-    } catch(error) {
+    } catch (error) {
+
+        console.log("Users Error:", error);
 
         res.status(500).json({
             error: error.message
@@ -49,27 +53,43 @@ app.get("/users", async (req, res) => {
 
 });
 
-// User Register API
-app.post("/register", async (req,res)=>{
 
-    try{
+// Register user
+app.post("/register", async (req, res) => {
 
-        const {name, mobile} = req.body;
+    try {
 
-        let user = await User.findOne({mobile});
+        const { name, mobile } = req.body;
 
-        if(user){
-            return res.json({
-                message:"User already exists",
-                user
+
+        if (!name || !mobile) {
+
+            return res.status(400).json({
+                error: "Name and mobile are required"
             });
+
+        }
+
+
+        let user = await User.findOne({ mobile });
+
+
+        if (user) {
+
+            return res.json({
+                message: "User already exists",
+                user: user
+            });
+
         }
 
 
         user = new User({
-            name,
-            mobile,
-            online:false
+
+            name: name,
+            mobile: mobile,
+            online: false
+
         });
 
 
@@ -77,15 +97,21 @@ app.post("/register", async (req,res)=>{
 
 
         res.json({
-            message:"User created",
-            user
+
+            message: "User created",
+            user: user
+
         });
 
 
-    }catch(error){
+    } catch (error) {
+
+        console.log("Register Error:", error);
 
         res.status(500).json({
-            error:error.message
+
+            error: error.message
+
         });
 
     }
@@ -93,27 +119,21 @@ app.post("/register", async (req,res)=>{
 });
 
 
-
-// Socket Connection
-
-io.on("connection", (socket)=>{
-
+// Socket.IO
+io.on("connection", (socket) => {
 
     console.log("User connected:", socket.id);
 
 
+    socket.on("send_message", async (data) => {
 
-    socket.on("send_message", async (data)=>{
-
-        try{
+        try {
 
             const newMessage = new Message({
 
-                sender:data.sender,
-
-                receiver:data.receiver,
-
-                text:data.text
+                sender: data.sender,
+                receiver: data.receiver,
+                text: data.text
 
             });
 
@@ -124,32 +144,29 @@ io.on("connection", (socket)=>{
             io.emit("receive_message", data);
 
 
-        }catch(error){
+        } catch (error) {
 
-            console.log(error);
+            console.log("Message Error:", error);
 
         }
-
 
     });
 
 
-
-    socket.on("disconnect",()=>{
+    socket.on("disconnect", () => {
 
         console.log("User left:", socket.id);
 
     });
 
-
 });
 
 
-
+// Port
 const PORT = process.env.PORT || 3000;
 
 
-server.listen(PORT,"0.0.0.0",()=>{
+server.listen(PORT, "0.0.0.0", () => {
 
     console.log(`Chat Server Started on port ${PORT}`);
 
